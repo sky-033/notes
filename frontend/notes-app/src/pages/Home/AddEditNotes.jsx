@@ -1,0 +1,188 @@
+import React, { useState, useEffect } from "react";
+import Tag from "../../components/Input/Tag.jsx";
+import { MdClose } from "react-icons/md";
+import { motion } from "framer-motion";
+import axiosInstance from "../../utils/axiosinstance.js";
+
+const AddEditNotes = ({ noteData, type, getAllNotes, onClose }) => {
+  const [title, setTitle] = useState(noteData?.title || "");
+  const [content, setContent] = useState(noteData?.content || "");
+  const [tags, setTags] = useState(noteData?.tags || []);
+  const [error, setError] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    document.getElementById("title-input")?.focus();
+  }, []);
+
+  const addNewNote = async () => {
+    setIsSubmitting(true);
+    try {
+      const response = await axiosInstance.post("/add-note", {
+        title,
+        content,
+        tags,
+      });
+
+      if (response.data && response.data.note) {
+        getAllNotes();
+        onClose();
+      }
+    } catch (error) {
+      const msg = error.response?.data?.message || "Something went wrong";
+      setError(msg);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Logic for editNote and handleAddNote would typically follow here...
+  // EDIT NOTE FUNCTION
+  const editNote = async () => {
+    setIsSubmitting(true);
+    const noteId = noteData._id;
+    try {
+      const response = await axiosInstance.put("/edit-note/" + noteId, {
+        title,
+        content,
+        tags,
+      });
+
+      if (response.data && response.data.note) {
+        getAllNotes();
+        onClose();
+      }
+    } catch (error) {
+      const msg = error.response?.data?.message || "Something went wrong";
+      setError(msg);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+  const handleAddNote = () => {
+    if (!title) {
+      setError("Please enter the title");
+      document.getElementById("title-input").focus();
+      return;
+    }
+
+    if (!content) {
+      setError("Please enter the content");
+      document.getElementById("content-input").focus();
+      return;
+    }
+
+    setError("");
+
+    if (type === "edit") {
+      editNote();
+    } else {
+      addNewNote();
+    }
+  };
+  return (
+    <motion.div
+      className="relative bg-white rounded-lg shadow-lg p-4 sm:p-6 border border-green-200 w-full max-w-full mx-auto"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+    >
+      <motion.button
+        className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center absolute -top-2 -right-2 sm:-top-3 sm:-right-3 bg-white shadow-md text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors cursor-pointer"
+        onClick={onClose}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+      >
+        <MdClose className="text-lg sm:text-xl" />
+      </motion.button>
+
+      <div className="flex flex-col gap-2">
+        <label className="input-label text-green-600 font-medium tracking-wider text-sm sm:text-base">
+          TITLE
+        </label>
+        <motion.input
+    id="title-input"
+    type="text"
+    className="text-xl sm:text-2xl text-slate-800 outline-none border-b-2 border-transparent focus:border-green-300 transition-colors w-full"
+    placeholder="Study Data Structures"
+    value={title}
+    onChange={({ target }) => setTitle(target.value)}
+    whileFocus={{ scale: 1.01 }}
+  />
+  </div>
+  <div className="flex flex-col gap-2 mt-4 sm:mt-6">
+  <label className="input-label text-green-600 font-medium tracking-wider text-sm sm:text-base">
+    CONTENT
+  </label>
+  <motion.textarea
+    id="content-input"
+    type="text"
+    className="text-sm text-slate-700 outline-none bg-green-50 p-3 sm:p-4 rounded-lg resize-none transition-colors focus:bg-green-100 focus:shadow-inner w-full"
+    placeholder="Write your note content here..."
+    rows={8}
+    value={content}
+    onChange={({ target }) => setContent(target.value)}
+    whileFocus={{ scale: 1.01 }}
+  />
+</div>
+<div className="mt-4 sm:mt-5 cursor-pointer">
+  <label className="input-label text-green-600 font-medium tracking-wider text-sm sm:text-base">
+    TAGS
+  </label>
+  <Tag tags={tags} setTags={setTags} />
+</div>
+
+{error && (
+  <motion.p
+    className="text-red-500 text-xs pt-3 sm:pt-4 flex items-center"
+    initial={{ opacity: 0, x: -10 }}
+    animate={{ opacity: 1, x: 0 }}
+    transition={{ duration: 0.2 }}
+  >
+    {error}
+  </motion.p>
+)}
+
+<motion.button
+  className={`btn-primary font-medium mt-4 sm:mt-5 p-2 sm:p-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 rounded-lg-shadow-md w-full cursor-pointer${
+    isSubmitting ? "opacity-80" : ""
+  }`}
+  onClick={handleAddNote}
+  disabled={isSubmitting}
+  whileHover={{ scale: 1.02 }}
+  whileTap={{ scale: 0.98 }}
+>
+  
+{isSubmitting ? (
+    <span className="flex items-center justify-center">
+      <svg
+        className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          className="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          strokeWidth="4"
+        ></circle>
+        <path
+          className="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+        ></path>
+      </svg>
+      {type === "edit" ? "UPDATING..." : "ADDING..."}
+    </span>
+  ) : (
+    <span>{type === "edit" ? "UPDATE" : "ADD"}</span>
+  )}
+</motion.button>
+    </motion.div>
+  );
+};
+
+export default AddEditNotes;
