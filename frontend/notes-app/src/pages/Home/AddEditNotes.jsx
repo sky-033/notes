@@ -18,7 +18,7 @@ const AddEditNotes = ({ noteData, type, getAllNotes, onClose }) => {
   const addNewNote = async () => {
     setIsSubmitting(true);
     try {
-      const response = await axiosInstance.post("/add-note", {
+      const response = await axiosInstance.post("https://notes-gcjt.onrender.com/add-note", {
         title,
         content,
         tags,
@@ -42,7 +42,7 @@ const AddEditNotes = ({ noteData, type, getAllNotes, onClose }) => {
     setIsSubmitting(true);
     const noteId = noteData._id;
     try {
-      const response = await axiosInstance.put(`/edit-note/${noteId}`, {
+      const response = await axiosInstance.put(`https://notes-gcjt.onrender.com/edit-note/${noteId}`, {
         title,
         content,
         tags,

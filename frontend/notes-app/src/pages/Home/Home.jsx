@@ -29,7 +29,7 @@ const Home = () => {
 
   const getUserInfo = async () => {
     try {
-      const response = await axiosInstance.get("/get-user");
+      const response = await axiosInstance.get("https://notes-gcjt.onrender.com/get-user");
       if (response.data?.user) {
         setUserInfo(response.data.user);
       }
@@ -44,7 +44,7 @@ const Home = () => {
   const getAllNotes = async () => {
     setIsLoading(true);
     try {
-      const response = await axiosInstance.get("/get-all-notes");
+      const response = await axiosInstance.get("https://notes-gcjt.onrender.com/get-all-notes");
       if (response.data?.notes) {
         setTimeout(() => {
           setAllNotes(response.data.notes);
@@ -59,7 +59,7 @@ const Home = () => {
 
   const deleteNote = async (data) => {
     try {
-      const response = await axiosInstance.delete(`/delete-note/${data._id}`);
+      const response = await axiosInstance.delete(`https://notes-gcjt.onrender.com/delete-note/${data._id}`);
       if (response.data && !response.data.error) {
         getAllNotes();
       }
@@ -71,7 +71,7 @@ const Home = () => {
   const onSearchNote = async (query) => {
     setIsLoading(true);
     try {
-      const response = await axiosInstance.get("/search-notes", {
+      const response = await axiosInstance.get("https://notes-gcjt.onrender.com/search-notes", {
         params: { query },
       });
 
