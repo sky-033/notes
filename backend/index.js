@@ -117,7 +117,7 @@ app.post("/login", async (req, res) => {
       message: "Email and password are required",
     });
   }
-
+  
   try {
     const user = await User.findOne({
       email: email.toLowerCase().trim(),
