@@ -37,7 +37,7 @@ const SignUp = () => {
     try {
       
 
-      const response=await axiosInstance.post("/create-account", {
+      const response=await axiosInstance.post("https://notes-gcjt.onrender.com/create-account", {
         fullName,
         email,
         password,

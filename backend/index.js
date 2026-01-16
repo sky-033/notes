@@ -14,7 +14,7 @@ const app=express();
 //middlewares
 app.use(express.json());
 
-const allowedOrigins=["http://localhost:5173"];
+const allowedOrigins=["http://localhost:5173","https://notes-jmulnyunx-sujals-projects-5583469b.vercel.app"];
 app.use(
     cors({
         origin:allowedOrigins,

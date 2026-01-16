@@ -31,7 +31,7 @@ const handleLogin = async (e) => {
   setIsLoading(true);
 
 try {
-    const response = await axiosInstance.post("/login", {
+    const response = await axiosInstance.post("https://notes-gcjt.onrender.com/login", {
       email,
       password,
     });

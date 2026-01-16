@@ -196,7 +196,7 @@ const Home = () => {
                   >
                     <NoteCard
                       title={item.title}
-                      date={item.createdOn}
+                      date={item.createdAt}
                       content={item.content}
                       tags={item.tags}
                       isPinned={item.isPinned}
